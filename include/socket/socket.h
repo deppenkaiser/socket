@@ -1,14 +1,8 @@
 #pragma once
 
 #ifdef LINUX
-    #include <sys/socket.h>
-    #include <sys/time.h>
-    #include <arpa/inet.h>
-    #include <unistd.h>
     #include <stdbool.h>
-
     typedef int socket_handle_t;
-
     #define SOCKET_INVALID_SOCKET -1
     #define SOCKET_ERROR -1
 #endif // LINUX

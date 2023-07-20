@@ -1,6 +1,11 @@
 #include "include/socket/socket.h"
 
 #ifdef LINUX
+#include <sys/time.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 socket_handle_t socket_create_socket()
 {
     socket_handle_t receive = socket(AF_INET, SOCK_STREAM, 0);
