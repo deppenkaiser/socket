@@ -1,6 +1,5 @@
-#include "include/socket/socket.h"
+#include "socket/socket.h"
 
-#ifdef LINUX
 #include <sys/time.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -68,4 +67,3 @@ void socket_close(socket_handle_t* psocket)
     close(*psocket);
     *psocket = SOCKET_INVALID_SOCKET;
 }
-#endif // LINUX

@@ -1,17 +1,11 @@
 #pragma once
 
-#ifdef LINUX
-    #include <stdbool.h>
-    typedef int socket_handle_t;
-    #define SOCKET_INVALID_SOCKET -1
-    #define SOCKET_ERROR -1
-#endif // LINUX
+#include <stdbool.h>
 
-#ifdef WINDOWS
-    #include <WinSock2.h>
-    #include <stdbool.h>
-    typedef SOCKET socket_handle_t;
-#endif // WINDOWS
+#define SOCKET_INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
+typedef int socket_handle_t;
 
 socket_handle_t socket_create_socket();
 bool socket_bind_and_listen(socket_handle_t socket);
