@@ -14,7 +14,8 @@
 #endif // LINUX
 
 #ifdef WINDOWS
-    #include <WinSock2.h>    
+    #include <WinSock2.h>
+    #include <stdbool.h>
     typedef SOCKET socket_handle_t;
 #endif // WINDOWS
 
