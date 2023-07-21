@@ -25,7 +25,7 @@ socket_handle_t socket_create_socket(time_t receive_timeout_s)
 
 bool socket_bind_and_listen(socket_handle_t socket)
 {
-    bool bRetVal = false;
+    bool bind_and_listen = false;
     struct sockaddr_in server = {0};
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
@@ -35,19 +35,18 @@ bool socket_bind_and_listen(socket_handle_t socket)
     {
         if (listen(socket, 1) != SOCKET_ERROR)
         {
-            bRetVal = true;
+            bind_and_listen = true;
         }
     }
 
-    return bRetVal;
+    return bind_and_listen;
 }
 
 socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_t receive_timeout_us)
 {
-    bool bRetVal = false;
-    struct sockaddr_in clientAddr = {0};
-    socklen_t nSizeBytes = sizeof(clientAddr);
-    socket_handle_t client = accept(socket, (struct sockaddr*) &clientAddr, &nSizeBytes);
+    struct sockaddr_in client_addr = {0};
+    socklen_t size_bytes = sizeof(client_addr);
+    socket_handle_t client = accept(socket, (struct sockaddr*) &client_addr, &size_bytes);
     struct timeval tv = {0};
 
     tv.tv_sec = 0;
