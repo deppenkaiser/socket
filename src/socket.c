@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <signal.h>
 
 socket_handle_t socket_create_socket(time_t receive_timeout_s)
 {
@@ -58,6 +59,50 @@ socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_
     }
 
     return client;
+}
+
+bool socket_connect(socket_handle_t socket, const char* pip, unsigned short port)
+{
+    bool connected = false;
+    struct sockaddr_in server = {0};
+    struct timeval tv = {0};
+
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
+    server.sin_addr.s_addr = inet_addr(pip);
+	server.sin_family = AF_INET;
+	server.sin_port = htons(port);
+
+    if (setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) != SOCKET_ERROR)
+    {
+        if (connect(socket, (struct sockaddr*) &server , sizeof(server)) != SOCKET_ERROR)
+        {
+            // prevent exception, if the mount server closes the connection
+            signal(SIGPIPE, SIG_IGN);
+            connected = true;
+        }
+    }
+    else
+    {
+        socket_close(&socket);
+    }
+
+    return connected;
+}
+
+bool socket_send(socket_handle_t socket, const void* pdata, size_t size_bytes)
+{
+    bool sent = false;
+
+    ssize_t bytes_send = send(socket, pdata, size_bytes, MSG_NOSIGNAL);
+
+    if (bytes_send == size_bytes)
+    {
+        sent = true;
+    }
+
+    return sent;
 }
 
 void socket_close(socket_handle_t* psocket)
