@@ -105,6 +105,11 @@ bool socket_send(socket_handle_t socket, const void* pdata, size_t size_bytes)
     return sent;
 }
 
+size_t socket_receive(socket_handle_t socket, string_t data)
+{
+    return recv(socket, data, sizeof(string_t), 0);
+}
+
 void socket_close(socket_handle_t* psocket)
 {
     close(*psocket);

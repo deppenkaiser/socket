@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string/string.h>
 #include <stdbool.h>
 #include <sys/time.h>
 #include <stddef.h>
@@ -14,4 +15,5 @@ bool socket_bind_and_listen(socket_handle_t socket);
 socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_t receive_timeout_us);
 bool socket_connect(socket_handle_t socket, const char* pip, unsigned short port);
 bool socket_send(socket_handle_t socket, const void* pdata, size_t size_bytes);
+size_t socket_receive(socket_handle_t socket, string_t data);
 void socket_close(socket_handle_t* psocket);
