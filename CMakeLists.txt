@@ -10,6 +10,7 @@ target_sources(socket PRIVATE
 
 target_include_directories(socket PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/include
+    ${CMAKE_CURRENT_LIST_DIR}/../string/include
 )
 
 target_link_libraries(socket
