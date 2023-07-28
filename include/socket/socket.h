@@ -7,6 +7,7 @@
 
 #define SOCKET_INVALID_SOCKET -1
 #define SOCKET_ERROR -1
+#define SOCKET_TIMEOUT -1
 
 typedef int socket_handle_t;
 
