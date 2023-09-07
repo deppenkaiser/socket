@@ -61,7 +61,7 @@ socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_
     return client;
 }
 
-bool socket_connect(socket_handle_t socket, const char* pip, unsigned short port)
+bool socket_connect(socket_handle_t socket, const char* ip, unsigned short port)
 {
     bool connected = false;
     struct sockaddr_in server = {0};
@@ -70,7 +70,7 @@ bool socket_connect(socket_handle_t socket, const char* pip, unsigned short port
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
-    server.sin_addr.s_addr = inet_addr(pip);
+    server.sin_addr.s_addr = inet_addr(ip);
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
 
@@ -91,11 +91,11 @@ bool socket_connect(socket_handle_t socket, const char* pip, unsigned short port
     return connected;
 }
 
-bool socket_send(socket_handle_t socket, const void* pdata, size_t size_bytes)
+bool socket_send(socket_handle_t socket, const void* data, size_t size_bytes)
 {
     bool sent = false;
 
-    ssize_t bytes_send = send(socket, pdata, size_bytes, MSG_NOSIGNAL);
+    ssize_t bytes_send = send(socket, data, size_bytes, MSG_NOSIGNAL);
 
     if (bytes_send == size_bytes)
     {
@@ -110,8 +110,8 @@ size_t socket_receive(socket_handle_t socket, string_t data)
     return recv(socket, data, sizeof(string_t), 0);
 }
 
-void socket_close(socket_handle_t* psocket)
+void socket_close(socket_handle_t* socket)
 {
-    close(*psocket);
-    *psocket = SOCKET_INVALID_SOCKET;
+    close(*socket);
+    *socket = SOCKET_INVALID_SOCKET;
 }
