@@ -112,6 +112,9 @@ size_t socket_receive(socket_handle_t socket, string_t data)
 
 void socket_close(socket_handle_t* socket)
 {
-    close(*socket);
-    *socket = SOCKET_INVALID_SOCKET;
+    if (*socket != SOCKET_INVALID_SOCKET)
+    {
+        close(*socket);
+        *socket = SOCKET_INVALID_SOCKET;
+    }
 }
