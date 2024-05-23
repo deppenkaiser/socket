@@ -1,13 +1,13 @@
-#include "socket/socket.h"
+#include "socket.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <signal.h>
 
-socket_handle_t socket_create_socket(time_t receive_timeout_s)
+socket_handle_t socket_create_socket(time_t receive_timeout_s, bool tcp)
 {
-    socket_handle_t receive = socket(AF_INET, SOCK_STREAM, 0);
+    socket_handle_t receive = socket(AF_INET, tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
     struct timeval tv_connect = {0};
 
     tv_connect.tv_sec = receive_timeout_s;
@@ -105,9 +105,9 @@ bool socket_send(socket_handle_t socket, const void* data, size_t size_bytes)
     return sent;
 }
 
-size_t socket_receive(socket_handle_t socket, string_t data)
+size_t socket_receive(socket_handle_t socket, char* data, size_t buffer_size)
 {
-    return recv(socket, data, sizeof(string_t), 0);
+    return recv(socket, data, buffer_size, 0);
 }
 
 void socket_close(socket_handle_t* socket)
