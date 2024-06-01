@@ -11,6 +11,7 @@
 
 typedef int socket_handle_t;
 
+bool socket_ping(const char* ip_address);
 socket_handle_t socket_create_socket(time_t receive_timeout_s, bool tcp);
 bool socket_bind_and_listen(socket_handle_t socket);
 socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_t receive_timeout_us);
