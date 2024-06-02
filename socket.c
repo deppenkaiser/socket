@@ -4,6 +4,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdio.h>
+
+bool socket_ping(const char* ip_address)
+{
+    char command[100] = {0};
+    snprintf(command, sizeof(command), "ping -c 1 %s", ip_address);
+    return system(command) == 0;
+}
 
 socket_handle_t socket_create_socket(time_t receive_timeout_s, bool tcp)
 {
