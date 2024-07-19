@@ -113,7 +113,7 @@ bool socket_send(socket_handle_t socket, const void* data, size_t size_bytes)
     return sent;
 }
 
-size_t socket_receive(socket_handle_t socket, char* data, size_t buffer_size)
+ssize_t socket_receive(socket_handle_t socket, char* data, size_t buffer_size)
 {
     return recv(socket, data, buffer_size, 0);
 }
