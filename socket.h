@@ -3,6 +3,7 @@
 #include <string/string.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include <sys/socket.h>
 #include <stddef.h>
 
 #define SOCKET_INVALID_SOCKET -1
