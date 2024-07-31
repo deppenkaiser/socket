@@ -1,4 +1,4 @@
-#include "socket.h"
+#include "socket/socket.h"
 
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -31,13 +31,13 @@ socket_handle_t socket_create_socket(time_t receive_timeout_s, bool tcp)
     return receive;
 }
 
-bool socket_bind_and_listen(socket_handle_t socket)
+bool socket_bind_and_listen(socket_handle_t socket, int16_t port)
 {
     bool bind_and_listen = false;
     struct sockaddr_in server = {0};
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(5000);
+    server.sin_port = htons(port);
 
     if (bind(socket, (struct sockaddr*) &server, sizeof(server)) != SOCKET_ERROR)
     {
