@@ -54,18 +54,7 @@ socket_handle_t socket_accept_incomming_connection(socket_handle_t socket, time_
 {
     struct sockaddr_in client_addr = {0};
     socklen_t size_bytes = sizeof(client_addr);
-    socket_handle_t client = accept(socket, (struct sockaddr*) &client_addr, &size_bytes);
-    struct timeval tv = {0};
-
-    tv.tv_sec = 0;
-    tv.tv_usec = receive_timeout_us;
-
-    if (setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == SOCKET_ERROR)
-    {
-        socket_close(&client);
-    }
-
-    return client;
+    return accept(socket, (struct sockaddr*) &client_addr, &size_bytes);
 }
 
 bool socket_connect(socket_handle_t socket, const char* ip, unsigned short port)
