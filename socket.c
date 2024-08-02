@@ -12,7 +12,7 @@ bool socket_ping(const char* ip_address)
     return system(command) == 0;
 }
 
-socket_handle_t socket_create_socket(time_t receive_timeout_s, bool tcp)
+socket_handle_t socket_create(time_t receive_timeout_s, bool tcp)
 {
     socket_handle_t receive = socket(AF_INET, tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
     struct timeval tv_connect = {0};
