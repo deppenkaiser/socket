@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <errno.h>
 
 bool socket_ping(const char* ip_address)
 {
@@ -61,27 +62,16 @@ bool socket_connect(socket_handle_t socket, const char* ip, unsigned short port)
 {
     bool connected = false;
     struct sockaddr_in server = {0};
-    struct timeval tv = {0};
-
-    tv.tv_sec = 5;
-    tv.tv_usec = 0;
 
     server.sin_addr.s_addr = inet_addr(ip);
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
 
-    if (setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) != SOCKET_ERROR)
+    if (connect(socket, (struct sockaddr*) &server , sizeof(server)) != SOCKET_ERROR)
     {
-        if (connect(socket, (struct sockaddr*) &server , sizeof(server)) != SOCKET_ERROR)
-        {
-            // prevent exception, if the mount server closes the connection
-            signal(SIGPIPE, SIG_IGN);
-            connected = true;
-        }
-    }
-    else
-    {
-        socket_close(&socket);
+        // prevent exception, if the mount server closes the connection
+        signal(SIGPIPE, SIG_IGN);
+        connected = true;
     }
 
     return connected;
