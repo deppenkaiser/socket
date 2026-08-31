@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 bool socket_ping(const char* ip_address)
 {
@@ -30,6 +31,42 @@ socket_handle_t socket_create(time_t receive_timeout_s, bool tcp)
     }
 
     return receive;
+}
+
+bool socket_get_own_ip(char* ip, size_t ip_size)
+{
+    bool got_ip = false;
+    socket_handle_t udp_socket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    if (udp_socket != SOCKET_INVALID_SOCKET)
+    {
+        struct sockaddr_in remote_addr = {0};
+
+        remote_addr.sin_family = AF_INET;
+        remote_addr.sin_addr.s_addr = inet_addr("8.8.8.8");
+        remote_addr.sin_port = htons(9);
+
+        // connect bestimmt ohne echte Pakete die Quell-IP der Route zu 8.8.8.8
+        if (connect(udp_socket, (struct sockaddr*) &remote_addr, sizeof(remote_addr)) != SOCKET_ERROR)
+        {
+            struct sockaddr_in local_addr = {0};
+            socklen_t local_size = sizeof(local_addr);
+
+            if (getsockname(udp_socket, (struct sockaddr*) &local_addr, &local_size) != SOCKET_ERROR)
+            {
+                const char* local_ip = inet_ntoa(local_addr.sin_addr);
+                if (local_ip != NULL && ip_size > 0)
+                {
+                    snprintf(ip, ip_size, "%s", local_ip);
+                    got_ip = true;
+                }
+            }
+        }
+
+        close(udp_socket);
+    }
+
+    return got_ip;
 }
 
 bool socket_bind_and_listen(socket_handle_t socket, int16_t port)
@@ -96,7 +133,7 @@ ssize_t socket_receive(socket_handle_t socket, char* data, size_t buffer_size)
     return recv(socket, data, buffer_size, 0);
 }
 
-bool socket_udp_broadcast(const char* broadcast_ip, unsigned short port, const void* data, size_t size_bytes, char* sender_ip, size_t sender_ip_size)
+bool socket_udp_broadcast(const char* broadcast_ip, unsigned short port, const void* data, size_t size_bytes, const char* ignore_ip, char* sender_ip, size_t sender_ip_size)
 {
     bool received = false;
     socket_handle_t udp_socket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -116,19 +153,24 @@ bool socket_udp_broadcast(const char* broadcast_ip, unsigned short port, const v
             fd_set read_fds;
             struct timeval timeout = {0};
 
-            FD_ZERO(&read_fds);
-            FD_SET(udp_socket, &read_fds);
-            timeout.tv_sec = 3;
-
-            if (select(udp_socket + 1, &read_fds, NULL, NULL, &timeout) > 0)
+            while (!received)
             {
+                FD_ZERO(&read_fds);
+                FD_SET(udp_socket, &read_fds);
+                timeout.tv_sec = 3;
+
+                if (select(udp_socket + 1, &read_fds, NULL, NULL, &timeout) <= 0)
+                {
+                    break;
+                }
+
                 struct sockaddr_in sender_addr = {0};
                 socklen_t sender_size = sizeof(sender_addr);
 
                 if (recvfrom(udp_socket, NULL, 0, 0, (struct sockaddr*) &sender_addr, &sender_size) != SOCKET_ERROR)
                 {
                     const char* ip = inet_ntoa(sender_addr.sin_addr);
-                    if (ip != NULL && sender_ip_size > 0)
+                    if (ip != NULL && (ignore_ip == NULL || strcmp(ip, ignore_ip) != 0) && sender_ip_size > 0)
                     {
                         snprintf(sender_ip, sender_ip_size, "%s", ip);
                         received = true;

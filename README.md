@@ -6,10 +6,11 @@ Senden/Empfangen, Timeout-Steuerung und Ping.
 ## Umfang
 
 - `socket_create` – Socket erstellen (TCP/UDP) mit Timeout
+- `socket_get_own_ip` – Eigene IP-Adresse ermitteln
 - `socket_connect` – TCP-Verbindung aufbauen
 - `socket_send` / `socket_receive` – Daten senden/empfangen
 - `socket_bind_and_listen` / `socket_accept_incomming_connection` – Server-Modus
-- `socket_udp_broadcast` – UDP-Broadcast senden und Quell-IP der Antwort erfragen
+- `socket_udp_broadcast` – UDP-Broadcast senden und Quell-IP der Antwort erfragen (optional eigene IP ignorieren)
 - `socket_ping` – Erreichbarkeit prüfen
 - `socket_close` – Socket schließen
 
