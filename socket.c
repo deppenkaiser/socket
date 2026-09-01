@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
-#include <errno.h>
 #include <string.h>
 
 bool socket_ping(const char* ip_address)
